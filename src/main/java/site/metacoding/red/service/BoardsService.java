@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import site.metacoding.red.domain.boards.Boards;
 import site.metacoding.red.domain.boards.BoardsDao;
+import site.metacoding.red.domain.users.Users;
 import site.metacoding.red.web.dto.request.boards.WriteDto;
 import site.metacoding.red.web.dto.response.boards.ListPageDto;
 import site.metacoding.red.web.dto.response.boards.MainDto;
@@ -26,13 +27,19 @@ public class BoardsService {
 		int startNum = page * 3;
 		List<MainDto> boardsList = boardsDao.findAll(startNum, keyword);
 		PagingDto pagingDto = boardsDao.paging(page, keyword);
-		if (boardsList.size() == 0) 
+		if (boardsList.size() == 0) {
 		pagingDto.setNotResult(true);
 		pagingDto.makeBlockInfo(keyword);
 		pagingDto.setMainDtos(boardsList);
 
 		return pagingDto;
+		}
 		
+		pagingDto.setNotResult(false);
+		pagingDto.makeBlockInfo(keyword);
+		pagingDto.setMainDtos(boardsList);
+
+		return pagingDto;
 	}
 	
 	public Boards 게시글상세보기(Integer id) {
@@ -50,8 +57,8 @@ public class BoardsService {
 		boardsDao.deleteById(id);
 	}
 	
-	public void 게시글쓰기(Integer usersId, WriteDto writeDto) {
-		boardsDao.insert(writeDto.toEntity(usersId));
+	public void 게시글쓰기(WriteDto writeDto, Users principal) {
+		boardsDao.insert(writeDto.toEntity(principal.getId()));
 	}
 	
 }

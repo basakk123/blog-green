@@ -31,14 +31,13 @@ public class BoardsController {
 
 	// @PostMapping("/boards/{id}/delete")
 	// @PostMapping("/boards/{id}/update")
-	
 
-		@GetMapping({ "/", "/boards" })
-		public String getBoardsList(Model model, Integer page, String keyword) { // 0->0, 1->10, 2->20
-			PagingDto pagingDto = boardsService.게시글목록보기(page, keyword);
-			model.addAttribute("pagingDto", pagingDto);
-			return "boards/main";
-		}
+	@GetMapping({ "/", "/boards" })
+	public String getBoardsList(Model model, Integer page, String keyword) { // 0->0, 1->10, 2->20
+		PagingDto pagingDto = boardsService.게시글목록보기(page, keyword);
+		model.addAttribute("pagingDto", pagingDto);
+		return "boards/main";
+	}
 
 	@PutMapping("/boards/{id}")
 	public String update(@PathVariable Integer id, UpdateDto updateDto) {
@@ -48,7 +47,7 @@ public class BoardsController {
 
 	@GetMapping("/boards/{id}/updateForm")
 	public String updateForm(@PathVariable Integer id, Model model) {
-		Boards boardsPS =boardsService.게시글상세보기(id);
+		Boards boardsPS = boardsService.게시글상세보기(id);
 		Users principal = (Users) session.getAttribute("principal");
 
 		// 비정상 요청 체크
@@ -80,10 +79,10 @@ public class BoardsController {
 	@PostMapping("/boards")
 	public String writeBoards(WriteDto writeDto) {
 		Users principal = (Users) session.getAttribute("principal");
-		boardsService.게시글쓰기(principal.getId(), writeDto);
+		boardsService.게시글쓰기(writeDto, principal);
 		return "redirect:/";
 	}
-	
+
 	@GetMapping("/boards/{id}")
 	public String getBoardDetail(@PathVariable Integer id, Model model) {
 		model.addAttribute("boards", boardsService.게시글상세보기(id));
